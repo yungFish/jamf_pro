@@ -11,7 +11,7 @@ ldapsearch -x \
 -D "serviceAccount@directory.com" \
 -w "password" \
 -b "ou=Users,dc=directory,dc=com" \
--LLL "(${arg})" memberOf | awk -F '[:] ' ' ( $1 == "memberOf" ) { print substr($0, index($0,$2)) } '
+-LLL "(${arg})" memberOf | awk -F '[:] ' ' ( $1 == "memberOf" ) { print $2 } '
 
 done
 }
