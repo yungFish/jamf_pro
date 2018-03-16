@@ -15,6 +15,7 @@ thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}'
 ldap_search_f () { for arg; do
 
 ldapsearch -x \
+-o ldif-wrap=no \
 -H "ldaps://your.directory.com" \
 -D "serviceAccount@directory.com" \
 -w "password" \
