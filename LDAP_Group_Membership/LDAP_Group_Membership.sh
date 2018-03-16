@@ -1,9 +1,17 @@
 #!/bin/bash
 
-IFS=$'\n'
+##################################
+# Define variables
+##################################
 
+IFS=$'\n'
 thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}' )
 
+##################################
+# Define functions
+##################################
+
+# ldap search function
 ldap_search_f () { for arg; do
 
 ldapsearch -x \
@@ -16,6 +24,18 @@ ldapsearch -x \
 done
 }
 
+# Find subgroups function
+find_groups_f () { for arg; do
+
+ldap_search_f distinguishedName=${arg}
+
+done
+}
+
+##################################
+# Meat & potatoes
+##################################
+
 assignedUser=$( curl \
 	-sku apiuser:password \
 	-H "Accept: application/xml" \
@@ -24,12 +44,13 @@ assignedUser=$( curl \
 grpMembership=$( ldap_search_f sAMAccountName=${assignedUser} )
 EAResult="${grpMembership}"
 
-while [[ -n $grpMembership ]]; do
-	for grp in ${grpMembership}; do
-		subGrpMembership=$( ldap_search_f distinguishedName=${grp} )
-		[[ -n $subGrpMembership ]] && EAResult="${EAResult}\nNESTED:${subGrpMembership}"
-		[[ -n $subGrpMembership ]] && grpMembership="$subGrpMembership" || grpMembership=""
+for grp in ${grpMembership}; do
+	subGroups=$( find_groups_f ${grp} )
+	[[ -n $subGroups ]] && EAResult="${EAResult}\nNESTED: ${subGroups}"
+	until [[ -z $subGroups ]]; do
+		subGroups=$( find_groups_f ${subGroups} )
+		[[ -n $subGroups ]] && EAResult="${EAResult}\nNESTED: ${subGroups}"
 	done
 done
-
+		
 echo -e "<result>${EAResult}</result>"
