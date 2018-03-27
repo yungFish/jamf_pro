@@ -16,7 +16,7 @@ curl -sku apiuser:password \
 	-H "Content-type: text/xml" \
 	-X PUT -d "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>$XMLTOWRITE"
 
-elif [[ $moreSecure == "0 seconds" ]]; then
+elif [[ $moreSecure == "Cancel" ]]; then
 
 XMLTOWRITE="<computer><extension_attributes><extension_attribute><name>Screen_Saver_zero_seconds</name><value>Default</value></extension_attribute></extension_attributes></computer>"
 
