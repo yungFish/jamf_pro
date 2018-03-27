@@ -1,0 +1,9 @@
+# User_Choice_gif_vs_jif_remix
+
+Obviously the 'gif' vs 'jif' battle will rage on until the end of time. If you want to punish your users who say it the wrong way then you can use this to have some fun with that. (If you're one of those people who are objectively wrong, I suppose you could modify these scripts to reflect your improper pronunciation.)
+
+In my scenario, I have the follow-up script set to run in a policy with the custom trigger 'softies' which then runs the apple script to create a new text expansion. If you really wanted to force the concept, package up TextExpander (or your text replacement software of choice) with the 'gif' -> 'jif' replacement snippet already created.
+
+Here, the first script - the Self Service script - writes to one extension attribute which indicates the user pronounces the file extension as 'jif'. Next, the follow-up script creates the macOS text expansion and gives them one last chance to change their answer. If they switch back to "gif", it corrects the value in the first extension attribute and allows them to delete the text shortcut. If they maintain it's pronounced "jif", the script writes to a second extension attribute which determines smart group membership and puts the device in scope of a configuration profile that restricts the Keyboard panel within System Preferences. This forces them to live with their error forever or until they re-run the questionaire and fix their answer.
+
+Of course, the main User Choice example is more real world appropriate. This second set of scripts was simply included for fun as a way to demonstrate the versatility of the conceptual backbone of the script. Testing done here was minimal at best and the scripts do take their sweet time but it should still get the point across for humor's sake. Enjoy.
