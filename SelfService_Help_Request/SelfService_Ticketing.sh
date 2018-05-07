@@ -3,8 +3,6 @@
 thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}' )
 currentDate=$( date "+%m/%d/%y %H:%M:%S" )
 
-# Jamf Pro doesn't seem to like having the ")" on the same line as the 'EOF'.
-
 ticketDescription=$( osascript << EOF
 	text returned of (display dialog "Please describe your issue/request." default answer "I just wanted to say how much I appreciate y'all in my IT department." buttons {"OK"} default button 1)
 EOF
