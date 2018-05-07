@@ -32,7 +32,7 @@ EOF
 sleep 1
 
 lastChance=$( osascript << EOF
-	button returned of ( display dialog "I'll ask you one more time: How do you pronounce the '.gif' file extension?" buttons {"GIF", "JIF"} with title "I bet you give the best jifts at \$yourPreferredWinterHoliday!" )
+	button returned of ( display dialog "I'll ask you one more time: How do you pronounce the '.gif' file extension?" buttons {"GIF", "JIF"} with title "I bet you give the best jifts at $yourPreferredWinterHoliday!" )
 EOF
 )
 
