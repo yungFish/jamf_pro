@@ -8,10 +8,9 @@ IFS=$'\n'
 thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}' )
 
 ##################################
-# Define functions
+# Define ldap search function
 ##################################
 
-# ldap search function
 ldap_search_f () { for arg; do
 
 ldapsearch -x \
@@ -21,14 +20,6 @@ ldapsearch -x \
 -w "password" \
 -b "ou=Users,dc=directory,dc=com" \
 -LLL "(${arg})" memberOf | awk -F '[:] ' ' ( $1 == "memberOf" ) { print $2 } '
-
-done
-}
-
-# Find subgroups function
-find_groups_f () { for arg; do
-
-ldap_search_f distinguishedName=${arg}
 
 done
 }
@@ -46,11 +37,13 @@ grpMembership=$( ldap_search_f sAMAccountName=${assignedUser} )
 EAResult="${grpMembership}"
 
 for grp in ${grpMembership}; do
-	subGroups=$( find_groups_f ${grp} )
-	[[ -n $subGroups ]] && EAResult="${EAResult}\nNESTED: ${subGroups}"
-	until [[ -z $subGroups ]]; do
-		subGroups=$( find_groups_f ${subGroups} )
-		[[ -n $subGroups ]] && EAResult="${EAResult}\nNESTED: ${subGroups}"
+	nestedGroups=$( ldap_search_f distinguishedName=${grp} )
+	[[ -n $nestedGroups ]] && EAResult="${EAResult}\nNESTED: ${nestedGroups}"
+	until [[ -z $nestedGroups ]]; do
+		for nestGrp in ${nestedGroups}; do
+			nestedGroups=$( ldap_search_f distinguishedName=${nestGrp} )
+			[[ -n $nestedGroups ]] && EAResult="${EAResult}\nNESTED: ${nestedGroups}"
+		done
 	done
 done
 		
