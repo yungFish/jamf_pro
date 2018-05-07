@@ -6,4 +6,4 @@ Here, the first script - the Self Service script - writes to one extension attri
 
 (If you really wanted to force the concept, package up TextExpander with the 'gif' -> 'jif' replacement snippet already created.)
 
-Of course, the main User Choice example is more real world appropriate. This second set of scripts was simply included for fun as a way to demonstrate the versatility of the conceptual backbone of the script. Testing done here was minimal at best and the scripts do take their sweet time but it should still get the point across for humor's sake.
+Of course, the main User Choice example is more real world appropriate. This second set of scripts was simply included for fun as a way to demonstrate the versatility of the conceptual backbone of the script. Testing done here was minimal at best and the scripts certainly take their time but it should still get the point across for humor's sake.
