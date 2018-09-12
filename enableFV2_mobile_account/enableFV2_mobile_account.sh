@@ -13,6 +13,6 @@ done
 
 if [[ ${accountStatus} == "mobile" ]]; then
 
-# 	jamf policy -event encrypt
+# 	jamf policy -event encryptEvent
 	
 fi
