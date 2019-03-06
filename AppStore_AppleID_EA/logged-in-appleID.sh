@@ -13,10 +13,10 @@ while read -r; do
 done <<<"$appleIDList"
 declare -a appleIDarray
 
-[[ ${#appleIDarray[@]} > 1 ]] && EAResult="MULTIPLE APPLE IDs:"
+[[ ${#appleIDarray[@]} > 1 ]] && EAResult="MULTIPLE APPLE IDs: "
 
 for appleID in ${appleIDarray[@]}; do
-	[[ ${appleID} == ${appleIDarray[0]} ]] && EAResult="${EAResult} ${appleID}"
+	[[ ${appleID} == ${appleIDarray[0]} ]] && EAResult="${EAResult}${appleID}"
 	[[ ! ${appleID} == ${appleIDarray[0]} ]] && EAResult="${EAResult}, ${appleID}"
 done
 
