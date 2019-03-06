@@ -4,6 +4,10 @@ CURRENTUSER=$(python -c 'from SystemConfiguration import SCDynamicStoreCopyConso
 
 appleIDList=$( defaults read /Users/${CURRENTUSER}/Library/Preferences/com.apple.commerce.plist | grep appleId | awk -F '["]' '{print $2}' )
 
+if [[ -z ${appleIDList} ]]; then
+	EAResult="No plist found"
+fi
+
 while read -r; do
 	appleIDarray+=("$REPLY")
 done <<<"$appleIDList"
