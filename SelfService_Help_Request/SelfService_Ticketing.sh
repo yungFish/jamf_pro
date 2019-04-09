@@ -1,6 +1,6 @@
 #!/bin/bash
 
-thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}' )
+thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '"' '{print $4}' )
 currentDate=$( date "+%m/%d/%y %H:%M:%S" )
 
 ticketDescription=$( osascript << EOF
