@@ -1,21 +1,52 @@
 #!/bin/bash
+##########################################################################################
+#
+# This script uses the API to update an Extension Attribute via the EA name included in
+# the $XMLTOWRITE variable below. Ensure the value in that XML variable for the EA name
+# (in this case "SelfService_Help_Request") is updated for your attribute/environment.
+#
+##########################################################################################
+#
+# 2019-04-09:	Cleaned up user cancel/escape input
+#				Added the option to set defaultTicketText to parameter 4
+#
+##########################################################################################
 
+# set variables for JSS creds, URL, and required Extension Attribute info
 thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '"' '{print $4}' )
-currentDate=$( date "+%y-%m-%d_%H:%M:%S" )
+JSSAdmin="apiusername"
+JSSPassw="password"
+JSSURL="https://yourorganization.jamfcloud.com"
+EAName="SelfService_Help_Request"
 
-ticketDescription=$( osascript << EOF
-	text returned of (display dialog "Please describe your issue/request." default answer "I just wanted to say how much I appreciate y'all in my IT department." buttons {"OK"} default button 1)
-EOF
-)
+if [[ ! -z "$4" ]]; then
+	defaultTicketText="$4"
+else
+	defaultTicketText="Lorem ipsum dolor sit amet"
+fi
 
-# This script uses the API to update an Extension Attribute based on the EA name
-# (attribute ID may potentially be used as well) included in the XML below. Ensure the
-# value in the XML variable for the EA name (in this case "SelfService_Help_Request") is
-# updated to match your attribute.
+# Call an osascript dialog box to allow the end user to submit an issue/make a request
+ticketSubmission=$( osascript -e "display dialog \"Please describe your issue/request.\" default answer \"${defaultTicketText}\" buttons {\"Cancel\",\"OK\"} default button {\"OK\"}" )
 
-XMLTOWRITE="<computer><extension_attributes><extension_attribute><name>SelfService_Help_Request</name><value>[${currentDate}] - ${ticketDescription}</value></extension_attribute></extension_attributes></computer>"
+# assign the button selected and text submitted to their corresponding variables
+ticketButton=$( echo "${ticketSubmission}" | awk -F "button returned:" '{print $2}' )
+ticketDescription=$( echo "${ticketSubmission}" | awk -F "text returned:" '{print $2}' )
 
-curl -sku apiuser:password \
-	https://company.jamfcloud.com/JSSResource/computers/serialnumber/${thisSerial}/subset/extensionattributes \
-	-H "Content-type: text/xml" \
-	-X PUT -d "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>$XMLTOWRITE"
+# Exit script if the end user selects the 'Cancel' button or if their text matches
+# the $defaultTicketText
+if [[ "${ticketButton}" == "Cancel" || "${ticketDescription}" == "${defaultTicketText}" ]]; then
+	osascript -e display dialog "Thanks!" buttons {"OK"} default button 1
+	exit 1
+fi	
+
+# PUT the submitted text to the value of your corresponding EA
+if [[ -n "${ticketDescription}" ]]; then
+	osascript -e "display dialog \"Thanks for letting us know!\" default button {\"OK\"}"
+	
+	XMLTOWRITE="<computer><extension_attributes><extension_attribute><name>${EAName}</name><value>[$( date '+%Y-%m-%d_%H:%M:%S' )] - ${ticketDescription}</value></extension_attribute></extension_attributes></computer>"
+	curl -sku ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/computers/serialnumber/${thisSerial}/subset/extensionattributes -H "Content-type: text/xml" -X PUT -d "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>${XMLTOWRITE}"
+	
+	exit 0
+fi
+
+exit 0
