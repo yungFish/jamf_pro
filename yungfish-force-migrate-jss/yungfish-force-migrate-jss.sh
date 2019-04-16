@@ -11,6 +11,20 @@
 #		1. haircut 'migrate-jss-client' - https://github.com/haircut/migrate-jss-client
 #		2. kc9wwh 'removeJamfProMDM' - https://github.com/kc9wwh/removeJamfProMDM
 #
+# To accomplish this the following will be performed:
+#			- Attempt removal via Jamf binary
+#			- Attempt removal via Jamf API sending an MDM UnmanageDevice command
+#
+# REQUIREMENTS:
+#			- Jamf Pro
+#			- Jamf Pro API User with permission to read computer objects
+#			- Jamf Pro API User with permission to send management commands
+#           		- Script must be executed as root (due to profiles command)
+#
+# EXIT CODES:
+#			0 - Everything is Successful
+#			1 - Unable to remove MDM Profile
+#
 ###############################################################################
 #	Script Variables & Configuration                                          #
 ###############################################################################
@@ -53,9 +67,9 @@ heading_pre="Self Service will now be upgraded."
 # UI heading (bolded top line) for alert shown after completion of migration
 heading_post="Self Service upgrade complete."
 # UI main body message show before migration
-body_pre="Self Service will automatically close to complete the ugprade. This should take about 5 minutes. Please do not open Self Service until you receive a notification that the ugprade is complete."
+body_pre="Self Service will automatically close to complete the upgrade. This should take about 5 minutes. Please do not open Self Service until you receive a notification that the ugprade is complete."
 # UI main body for message shown after migration
-body_post="Self Service has been successfully upgraded. You may now re-open Self Service to access software installations and maintenance utilities. Please contact ITS if you need additional assistance."
+body_post="Self Service has been successfully upgraded. Please follow the instructions in Self Service to approve the change and contact IT if you have any questions or need any assistance."
 
 # locate jamf binary
 jamf=$(which jamf)
@@ -90,8 +104,8 @@ jamfUnmanageDeviceAPI() {
     counter=0
     until [ "$mdmPresent" -eq "0" ] || [ "$counter" -gt "9" ]; do
         ((counter++))
-        write_log "Check ${counter}/10; MDM Profile Present; waiting 30 seconds to re-check..."
-        sleep 30
+        write_log "Check ${counter}/10; MDM Profile Present; waiting 18 seconds to re-check..."
+        sleep 18
         checkMDMProfileInstalled
     done
 }
@@ -126,43 +140,19 @@ fi
 
 # remove the mdm profile
 write_log "Removing MDM Profiles ..."
-if [ "${osMinorVersion}" -ge 13 ]; then
-	write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting removal via jamf binary..."
-	/usr/local/bin/jamf removeMdmProfile -verbose
-    sleep 2
-    checkMDMProfileInstalled
-    if [ "$mdmPresent" == "0" ]; then
-        write_log "Successfully Removed MDM Profile..."
-    else
-        write_log "MDM Profile Present; attempting removal via API..."
-        jamfUnmanageDeviceAPI
-        if [ "$mdmPresent" != "0" ]; then
-            write_log "Unable to remove MDM Profile; exiting..."
-            exit 1
-        fi
-    fi
+write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting removal via jamf binary..."
+/usr/local/bin/jamf removeMdmProfile -verbose
+sleep 2
+checkMDMProfileInstalled
+if [ "$mdmPresent" == "0" ]; then
+	write_log "Successfully Removed MDM Profile..."
 else
-	write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting removal via jamf binary..."
-	/usr/local/bin/jamf removeMdmProfile -verbose
-    sleep 2
-    checkMDMProfileInstalled
-    if [ "$mdmPresent" == "0" ]; then
-        write_log "Successfully Removed MDM Profile..."
-    else
-        write_log "MDM Profile Present; attempting removal via API..."
-        jamfUnmanageDeviceAPI
-        if [ "$mdmPresent" == "0" ]; then
-            write_log "Successfully Removed MDM Profile..."
-        else
-            write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting force removal..."
-        	/bin/mv -v /var/db/ConfigurationProfiles/ /var/db/ConfigurationProfiles-$timestamp
-            checkMDMProfileInstalled
-            if [ "$mdmPresent" != "0" ]; then
-                write_log "Unable to remove MDM Profile; exiting..."
-                exit 1
-            fi
-        fi
-    fi
+	write_log "MDM Profile Present; attempting removal via API..."
+	jamfUnmanageDeviceAPI
+	if [ "$mdmPresent" != "0" ]; then
+		write_log "Unable to remove MDM Profile; exiting..."
+		exit 1
+	fi
 fi
 
 # remove the current jamf framework
