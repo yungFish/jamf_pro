@@ -1,6 +1,18 @@
 #!/bin/bash
 ###############################################################################
-# configuration                                                               #
+#
+#	Huge credit and thanks go to github.com/kc9wwh and github.com/haircut for
+#	their projects that served as this script's inspiration. This script was designed to
+#	follow the exact same workflow as haircut's migrate-jss-client project but with this
+#	updated script to make the API call to un-enroll the device (using the backbone of 
+#	kc9wwh's script linked below).
+#
+#	For reference:
+#		1. haircut 'migrate-jss-client' - https://github.com/haircut/migrate-jss-client
+#		2. kc9wwh 'removeJamfProMDM' - https://github.com/kc9wwh/removeJamfProMDM
+#
+###############################################################################
+#	Script Variables & Configuration                                          #
 ###############################################################################
 # JSS URLs & script variables
 old_jss_url="https://old.jamf.server"
@@ -117,7 +129,7 @@ write_log "Removing MDM Profiles ..."
 if [ "${osMinorVersion}" -ge 13 ]; then
 	write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting removal via jamf binary..."
 	/usr/local/bin/jamf removeMdmProfile -verbose
-    sleep 1
+    sleep 2
     checkMDMProfileInstalled
     if [ "$mdmPresent" == "0" ]; then
         write_log "Successfully Removed MDM Profile..."
@@ -132,7 +144,7 @@ if [ "${osMinorVersion}" -ge 13 ]; then
 else
 	write_log "macOS `/usr/bin/sw_vers -productVersion`; attempting removal via jamf binary..."
 	/usr/local/bin/jamf removeMdmProfile -verbose
-    sleep 1
+    sleep 2
     checkMDMProfileInstalled
     if [ "$mdmPresent" == "0" ]; then
         write_log "Successfully Removed MDM Profile..."
@@ -169,7 +181,7 @@ write_log "Finished installing new quickadd"
 rm "${quickadd_path}"
 write_log "Removed QuickAdd package"
 
-sleep 1
+sleep 2
 
 # Make sure we're now connected to the new JSS
 if echo "$(${jamf} checkJSSConnection)" | grep -q "${new_jss_url}"; then
@@ -182,7 +194,7 @@ write_log "Managing machine"
 write_log "Enabling MDM"
 "${jamf}" mdm
 
-sleep 1
+sleep 2
 
 # stop, unload, remove launchdaemon
 write_log "Stopping LaunchDaemon"
@@ -200,7 +212,7 @@ rm "/Library/LaunchDaemons/${launchdaemon_name}.plist"
 write_log "Managing machine again"
 "${jamf}" manage
 
-sleep 1
+sleep 2
 
 # alert user process is finished
 if [[ "${runmode}" == "interactive" ]]; then
