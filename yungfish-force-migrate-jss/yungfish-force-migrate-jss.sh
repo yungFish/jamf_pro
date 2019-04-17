@@ -11,22 +11,22 @@
 #		1. haircut 'migrate-jss-client' - https://github.com/haircut/migrate-jss-client
 #		2. kc9wwh 'removeJamfProMDM' - https://github.com/kc9wwh/removeJamfProMDM
 #
-# To accomplish this the following will be performed:
+# 	To accomplish this the following will be performed:
 #			- Attempt removal via Jamf binary
 #			- Attempt removal via Jamf API sending an MDM UnmanageDevice command
 #
-# REQUIREMENTS:
+# 	REQUIREMENTS:
 #			- Jamf Pro
 #			- Jamf Pro API User with permission to read computer objects
 #			- Jamf Pro API User with permission to send management commands
 #           		- Script must be executed as root (due to profiles command)
 #
-# EXIT CODES:
+# 	EXIT CODES:
 #			0 - Everything is Successful
 #			1 - Unable to remove MDM Profile
 #
 ###############################################################################
-#	Script Variables & Configuration                                          #
+#	Script Variables & Configuration                                      #
 ###############################################################################
 # JSS URLs & script variables
 old_jss_url="https://old.jamf.server"
