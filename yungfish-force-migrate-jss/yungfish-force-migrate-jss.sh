@@ -2,7 +2,7 @@
 ###############################################################################
 #
 #	Huge credit and thanks go to github.com/kc9wwh and github.com/haircut for
-#	their projects that served as this script's inspiration. This script was designed to
+#	their projects that served as this script's motivation. This script was designed to
 #	follow the exact same workflow as haircut's migrate-jss-client project but with this
 #	updated script to make the API call to un-enroll the device (using the backbone of 
 #	kc9wwh's script linked below).
