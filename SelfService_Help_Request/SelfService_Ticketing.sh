@@ -19,11 +19,8 @@ JSSPassw="password"
 JSSURL="https://yourorganization.jamfcloud.com"
 EAName="SelfService_Help_Request"
 
-if [[ ! -z "$4" ]]; then
-	defaultTicketText="$4"
-else
-	defaultTicketText="Lorem ipsum dolor sit amet"
-fi
+[[ -n "$4" ]] && defaultTicketText="$4"
+[[ -z "$4" ]] && defaultTicketText="Lorem ipsum dolor sit amet"
 
 # Call an osascript dialog box to allow the end user to submit an issue/make a request
 ticketSubmission=$( osascript -e "display dialog \"Please describe your issue/request.\" default answer \"${defaultTicketText}\" buttons {\"Cancel\",\"OK\"} default button {\"OK\"}" )
