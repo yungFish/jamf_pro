@@ -20,7 +20,7 @@ bupLocalHostName=$( /usr/sbin/scutil --get LocalHostName )
 # re-written with some clever use of 'case' to set the prefix automatically. Was easier
 # when writing to simply modify the variable below and re-upload to Jamf Pro as
 # separate script(s).
-Prefix="PREFIX-"
+Prefix="PREFIX"
 
 # Set necessary variables for device type and assigned user as expected by organizational
 # naming convention.
