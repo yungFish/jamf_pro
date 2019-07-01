@@ -20,7 +20,7 @@ bupLocalHostName=$( /usr/sbin/scutil --get LocalHostName )
 # re-written with some clever use of 'case' to set the prefix automatically. Was easier
 # when writing to simply modify the variable below and re-upload to Jamf Pro as
 # separate script(s).
-bldgPrefix="PREFIX-"
+Prefix="PREFIX-"
 
 # Set necessary variables for device type and assigned user as expected by organizational
 # naming convention.
@@ -46,17 +46,17 @@ case $macModel in
 	
 	MacBookPro )
 	echo "Model suffix: \"-MBP\""
-	jamf setComputerName -name "W-${currentUser}-MBP"
+	jamf setComputerName -name "${Prefix}-${currentUser}-MBP"
 	echo "COMPUTER NAME SET - ComputerName, HostName, and LocalHostName set to: \"W-${currentUser}-MBP\""
 	;;
 	MacBookAir )
 	echo "Model suffix: \"-MBA\""
-	jamf setComputerName -name "W-${currentUser}-MBA"
+	jamf setComputerName -name "${Prefix}-${currentUser}-MBA"
 	echo "COMPUTER NAME SET - ComputerName, HostName, and LocalHostName set to: \"W-${currentUser}-MBA\""
 	;;
 	MacBook )
 	echo "Model suffix: \"-MB\""
-	jamf setComputerName -name "W-${currentUser}-MB"
+	jamf setComputerName -name "${Prefix}-${currentUser}-MB"
 	echo "COMPUTER NAME SET - ComputerName, HostName, and LocalHostName set to: \"W-${currentUser}-MB\""
 	;;
 
