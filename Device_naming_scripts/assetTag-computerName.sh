@@ -3,7 +3,7 @@
 # Set your Jamf Pro server information
 jpsURL="https://yourInstance.jamfcloud.com/JSSResource"
 jpsUser="apiuser"
-jpsPass="apipassword"
+jpsPass='apipassword'
 
 # Assign our computer's serial number to a variable
 thisSerial=$( ioreg -l | grep IOPlatformSerialNumber | awk -F '["]' '{print $4}' )
