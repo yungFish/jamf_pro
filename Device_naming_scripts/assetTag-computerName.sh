@@ -13,7 +13,7 @@ jpsAssetTag=$( curl -sku ${jpsUser}:${jpsPass} -H "Accept: text/xml" ${jpsURL}/c
 
 # Leverage the jamf binary to assign the Asset Tag value in the computer's inventory
 # record to the local ComputerName, HostName, and LocalHostName values.
-# jamf setComputerName -name "${jpsAssetTag}"
+jamf setComputerName -name "${jpsAssetTag}"
 echo -e "Your computer name will be \"${jpsAssetTag}\""
 
 exit 0
