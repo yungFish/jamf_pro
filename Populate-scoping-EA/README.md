@@ -1,0 +1,3 @@
+This is a light script designed to be placed in Self Service and scoped to the specific user group of desktop techs/admins/etc that might be troubleshooting an end-user's computer.
+
+The tech could log into Self Service from the machine they're working on and run this policy so that a smart group with this extension attribute value could be placed as an exclusion to the more restrictive management settings. This would allow the tech to have more freedom to work with the machine by putting it into an exception group for however many management settings with one quick policy. It also includes a time stamp in the EA value written for easy confirmation of when the policy was run.
