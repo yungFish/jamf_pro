@@ -1,29 +1,23 @@
 #!/bin/sh
 
-##########################################################################################
-#
-# To save space, the full kickstart path is replaced in most examples by
-# "/System/Library/yada-yada-yada/kickstart -targetdisk /". When activating any of the
-# flags in this demo, use the full path and syntax of the kickstart verb as shown in 
-# the first example on line 16.
-#
-##########################################################################################
+# Set kickstart path for simplicity
+kickStartPath="/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources"
 
 # Define your Remote Management User
-userToEnable="sshadmin"
+userToEnable="yoursshadmin"
 
 # Start by activating Remote Management (Note: this is different from Remote Login)
-/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -targetdisk / -activate 
+${kickStartPath}/kickstart -targetdisk / -activate 
 
 # Enable the options found in the GUI in [ Remote Management -> "Computer Settings..." ]
-/System/Library/yada-yada-yada/kickstart -targetdisk /
+${kickStartPath}/kickstart -targetdisk /
 	-configure -clientopts
 	-setmenuextra -menuextra yes 						# Enables the "Show remote management status in menu bar" option
 	-setdirlogins -dirlogins  yes						# Enables Directory Server accounts for authentication. Users must be a member of one of the ARD directory groups to authenticate.
 
 # The following binary flags determine the deployment flags found in the GUI in [ Remote Management -> "Options..." ]
 # If you want to simply enable all priveleges, you can use "-privs -all" and be done with it
-/System/Library/yada-yada-yada/kickstart -targetdisk /
+${kickStartPath}/kickstart -targetdisk /
 
 	# Here we're enabling Remote MGMT for the desired user as defined in line 13. Additional users can be enabled when separated via comma so your $userToEnable variable could be multiple users if formatted as 'user1,user2,user3' etc.
 	-configure -users "${userToEnable}" -access -on -allowAccessFor -specifiedUsers
